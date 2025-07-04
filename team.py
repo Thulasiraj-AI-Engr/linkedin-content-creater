@@ -1,3 +1,4 @@
+
 from agno.agent import Agent
 from agno.models.google import Gemini
 from agno.team import Team
@@ -7,6 +8,11 @@ from agno.tools import tool
 from typing import Dict, List, Optional
 import json
 import re
+# --- ADDED: dotenv import and load ---
+from dotenv import load_dotenv
+import os
+load_dotenv()
+# --- END ADDED ---
 
 # Custom tools for LinkedIn content creation and networking
 @tool
@@ -181,8 +187,10 @@ content_architect = Agent(
 post_publisher = Agent(
     name="Post Publisher & Visualizer",
     role="Creates visuals and optimizes posts for maximum networking impact",
-    model=Gemini(id="gemini-2.0-flash-exp"),
-    tools=[GeminiTools()],
+    # --- CHANGED: Pass GOOGLE_API_KEY from environment ---
+    model=Gemini(id="gemini-2.0-flash-exp", api_key=os.getenv("GOOGLE_API_KEY")),
+    tools=[GeminiTools(api_key=os.getenv("GOOGLE_API_KEY"))],
+    # --- END CHANGED ---
     description="Visual content creator and LinkedIn optimization specialist focused on maximizing networking potential and engagement with target company professionals.",
     instructions=[
         "You are a LinkedIn visual content creator and networking optimization specialist.",
@@ -357,3 +365,19 @@ def run_examples():
     creator = LinkedInContentCreator()
     result1 = creator.create_networking_content(example1)
     print(result1)
+
+    # Add this at the end of your file to run the examples
+if __name__ == "__main__":
+    # You can either run examples or use the interactive mode
+    choice = input("Run examples (e) or interactive mode (i)? ").lower()
+    
+    if choice == 'e':
+        run_examples()
+    else:
+        creator = LinkedInContentCreator()
+        user_input = creator.get_user_input()
+        result = creator.create_networking_content(user_input)
+        print("\n" + "="*60)
+        print("🎯 GENERATED LINKEDIN CONTENT")
+        print("="*60)
+        print(result)

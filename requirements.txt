@@ -1,0 +1,6 @@
+# Core requirements for team.py
+agno
+requests
+DuckDuckGo-Search
+# If using Google Gemini API, add the official client (if available)
+# google-generativeai
